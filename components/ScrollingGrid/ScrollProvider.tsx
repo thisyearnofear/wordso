@@ -1,13 +1,24 @@
-import { type ReactNode, useEffect, useRef } from "react";
+// ScrollProvider.tsx
+import React, { createContext, useContext, useEffect, useRef } from "react";
 import Lenis from "@studio-freight/lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-interface ScrollProviderProps {
-  children: ReactNode;
+interface ScrollContextValue {
+  lenis: Lenis | null;
+  updateScrollTrigger: () => void;
 }
 
-export const ScrollProvider = ({ children }: ScrollProviderProps) => {
+const ScrollContext = createContext<ScrollContextValue>({
+  lenis: null,
+  updateScrollTrigger: () => {},
+});
+
+export const useScroll = () => useContext(ScrollContext);
+
+export const ScrollProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
@@ -16,7 +27,7 @@ export const ScrollProvider = ({ children }: ScrollProviderProps) => {
     // Initialize Lenis
     lenisRef.current = new Lenis({
       duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
@@ -60,5 +71,14 @@ export const ScrollProvider = ({ children }: ScrollProviderProps) => {
     };
   }, []);
 
-  return <>{children}</>;
+  return (
+    <ScrollContext.Provider
+      value={{
+        lenis: lenisRef.current,
+        updateScrollTrigger: () => ScrollTrigger.update(),
+      }}
+    >
+      {children}
+    </ScrollContext.Provider>
+  );
 };

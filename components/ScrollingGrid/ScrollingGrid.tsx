@@ -1,151 +1,122 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { useScroll } from "./ScrollProvider";
 import styles from "./ScrollingGrid.module.css";
 
-const GRID_CONFIG = {
-  TOTAL_IMAGES: 20,
-  COLUMNS: 5,
-  ROWS: 4,
-} as const;
-
-interface GridItemProps {
-  index: number;
-  className: string;
-}
-
-const GridItem = React.forwardRef<HTMLDivElement, GridItemProps>(
-  ({ index, className }, ref) => (
-    <div ref={ref} className={className}>
-      <div
-        className={styles.gridItemInner}
-        style={{
-          backgroundImage: `url(/images/${index + 1}.png)`,
-        }}
-      />
-    </div>
-  ),
-);
-
-GridItem.displayName = "GridItem";
+const TOTAL_IMAGES = 50;
 
 const ScrollingGrid: React.FC = () => {
   const gridRef = useRef<HTMLDivElement>(null);
-  const itemsRef = useRef<Array<HTMLDivElement | null>>([]);
+  const { updateScrollTrigger } = useScroll();
 
   useEffect(() => {
     if (!gridRef.current) return;
 
-    // Create a master timeline
-    const masterTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: gridRef.current,
-        start: "top center",
-        end: "bottom center",
-        scrub: 1,
-      },
-    });
+    const ctx = gsap.context(() => {
+      if (!gridRef.current) return;
 
-    // Initialize grid items with random positions
-    itemsRef.current.forEach((item, index) => {
-      if (!item) return;
+      const gridItems = gsap.utils.toArray<HTMLElement>(`.${styles.gridItem}`);
+      const gridWrap = gridRef.current.querySelector(`.${styles.gridWrap}`);
 
-      const depth = gsap.utils.random(-2000, 2000);
-      const rotation = gsap.utils.random(-180, 180);
+      if (!gridWrap) return;
 
-      gsap.set(item, {
-        xPercent: gsap.utils.random(-200, 200),
-        yPercent: gsap.utils.random(-200, 200),
-        rotationX: gsap.utils.random(-90, 90),
-        rotationY: gsap.utils.random(-90, 90),
-        rotationZ: rotation,
-        z: -1000,
+      // Create main timeline
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: gridRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
+          onUpdate: updateScrollTrigger,
+        },
+      });
+
+      // Set initial states
+      gsap.set(gridWrap, {
+        rotationY: 25,
+        transformPerspective: 1000,
+      });
+
+      gsap.set(gridItems, {
+        z: () => gsap.utils.random(-1500, 1500),
+        rotationX: () => gsap.utils.random(-45, 45),
+        rotationY: () => gsap.utils.random(-45, 45),
         opacity: 0,
       });
 
-      // Create individual timeline for each item
-      const itemTl = gsap.timeline();
+      // Animate grid wrap
+      tl.to(gridWrap, {
+        rotationY: -25,
+        ease: "none",
+      });
 
-      itemTl
-        .to(item, {
-          xPercent: 0,
-          yPercent: 0,
-          rotationX: 0,
-          rotationY: 0,
-          rotationZ: 0,
-          z: depth,
-          opacity: 1,
-          duration: 2,
-          ease: "power3.out",
-        })
-        .to(
-          item.querySelector(`.${styles.gridItemInner}`),
-          {
-            scale: 1,
-            duration: 1.5,
+      // Batch animate grid items for better performance
+      tl.to(gridItems, {
+        z: (i) => gsap.utils.random(-500, 500),
+        rotationX: 0,
+        rotationY: 0,
+        opacity: 1,
+        duration: 1,
+        stagger: {
+          amount: 1,
+          from: "random",
+        },
+        ease: "power2.inOut",
+      });
+
+      // Add hover animations
+      const createHoverAnimation = (item: HTMLElement) => {
+        const hoverTl = gsap.timeline({ paused: true });
+        hoverTl
+          .to(item, {
+            scale: 1.1,
+            z: "+=50",
+            duration: 0.3,
             ease: "power2.out",
-          },
-          "<",
-        );
+          })
+          .to(
+            item.querySelector(`.${styles.gridItemInner}`),
+            {
+              scale: 1.1,
+              duration: 0.3,
+              ease: "power2.out",
+            },
+            0
+          );
+        return hoverTl;
+      };
 
-      // Add to master timeline with stagger
-      masterTl.add(itemTl, index * 0.1);
+      gridItems.forEach((item) => {
+        const hoverTl = createHoverAnimation(item);
+        item.addEventListener("mouseenter", () => hoverTl.play());
+        item.addEventListener("mouseleave", () => hoverTl.reverse());
+      });
     });
 
-    // Add hover animations
-    const handleMouseEnter = (item: HTMLDivElement) => {
-      gsap.to(item, {
-        z: 200,
-        scale: 1.1,
-        duration: 0.5,
-        ease: "power2.out",
+    return () => {
+      ctx.revert();
+
+      // Clean up event listeners
+      const gridItems = gsap.utils.toArray<HTMLElement>(`.${styles.gridItem}`);
+      gridItems.forEach((item) => {
+        item.removeEventListener("mouseenter", () => {});
+        item.removeEventListener("mouseleave", () => {});
       });
     };
-
-    const handleMouseLeave = (item: HTMLDivElement) => {
-      gsap.to(item, {
-        z: 0,
-        scale: 1,
-        duration: 0.5,
-        ease: "power2.in",
-      });
-    };
-
-    // Attach event listeners and store cleanup functions
-    itemsRef.current.forEach((item) => {
-      if (item) {
-        const onEnter = () => handleMouseEnter(item);
-        const onLeave = () => handleMouseLeave(item);
-
-        item.addEventListener("mouseenter", onEnter);
-        item.addEventListener("mouseleave", onLeave);
-
-        // Cleanup listeners on unmount
-        return () => {
-          item.removeEventListener("mouseenter", onEnter);
-          item.removeEventListener("mouseleave", onLeave);
-        };
-      }
-    });
-  }, []);
+  }, [updateScrollTrigger]);
 
   return (
     <div className={styles.grid} ref={gridRef}>
-      <div
-        className={styles.gridWrap}
-        style={{
-          gridTemplateColumns: `repeat(${GRID_CONFIG.COLUMNS}, 1fr)`,
-          gridTemplateRows: `repeat(${GRID_CONFIG.ROWS}, 1fr)`,
-        }}
-      >
-        {Array.from({ length: GRID_CONFIG.TOTAL_IMAGES }, (_, index) => (
-          <GridItem
-            key={index}
-            index={index}
-            className={styles.gridItem}
-            ref={(el) => {
-              if (el) itemsRef.current[index] = el;
-            }}
-          />
+      <div className={styles.gridWrap}>
+        {Array.from({ length: TOTAL_IMAGES }, (_, index) => (
+          <div className={styles.gridItem} key={index}>
+            <div
+              className={styles.gridItemInner}
+              style={{
+                backgroundImage: `url(/images/${index + 1}.png)`,
+              }}
+            />
+          </div>
         ))}
       </div>
     </div>

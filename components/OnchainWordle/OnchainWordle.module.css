@@ -1,3 +1,4 @@
+/* KEEP: Core container styles */
 .container {
   position: relative;
   z-index: 2;
@@ -11,15 +12,17 @@
   gap: 4rem;
 }
 
+/* OPTIMIZE: Title - combine transitions */
 .title {
   font-size: 3.5rem;
   margin-bottom: 4rem;
   text-align: center;
   opacity: 0;
   transform: translateY(50px);
-  transition: all 0.6s ease-out;
+  transition: var(--transition-smooth); /* Use global transition variable */
 }
 
+/* OPTIMIZE: Section styles - use CSS custom properties */
 .section {
   position: relative;
   padding: 2rem;
@@ -30,12 +33,14 @@
   transition: transform 0.3s ease-out;
 }
 
+/* KEEP: Content positioning */
 .sectionContent {
   position: relative;
   z-index: 1;
   transform: translateZ(30px);
 }
 
+/* KEEP: Icon styles */
 .icon {
   font-size: 2.5rem;
   display: block;
@@ -43,6 +48,7 @@
   transform: translateZ(40px);
 }
 
+/* OPTIMIZE: Highlight effect */
 .highlight {
   position: relative;
   color: var(--color3);
@@ -55,20 +61,23 @@
   padding-bottom: 2px;
 }
 
+/* OPTIMIZE: Placeholder styles - use CSS custom properties */
 .placeholder {
   position: relative;
   padding: 3rem;
   border-radius: 30px;
   background: rgba(var(--bg-rgb), 0.9);
   backdrop-filter: blur(15px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
   transform-style: preserve-3d;
 }
 
+/* KEEP: Input container */
 .inputContainer {
   transform: translateZ(50px);
 }
 
+/* KEEP: Game interface layout */
 .gameInterface {
   margin-top: 2rem;
   display: flex;
@@ -76,6 +85,7 @@
   gap: 1rem;
 }
 
+/* OPTIMIZE: Input styles */
 .guessInput {
   padding: 1rem 1.5rem;
   font-size: 1.2rem;
@@ -83,15 +93,17 @@
   border-radius: 12px;
   background: rgba(var(--bg-rgb), 0.8);
   color: var(--color);
-  transition: all 0.3s ease;
+  transition: var(--transition-smooth);
 }
 
+/* KEEP: Focus states */
 .guessInput:focus {
   outline: none;
   border-color: var(--color3);
   box-shadow: 0 0 0 3px rgba(var(--color3-rgb), 0.2);
 }
 
+/* OPTIMIZE: Button styles */
 .submitButton {
   position: relative;
   padding: 1rem 2rem;
@@ -103,9 +115,10 @@
   border-radius: 12px;
   cursor: pointer;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: var(--transition-smooth);
 }
 
+/* KEEP: Button glow effect */
 .buttonGlow {
   position: absolute;
   inset: 0;
@@ -119,11 +132,12 @@
   transition: transform 0.6s ease;
 }
 
+/* KEEP: Button hover effect */
 .submitButton:hover .buttonGlow {
   transform: translateX(100%);
 }
 
-/* Add responsive design */
+/* OPTIMIZE: Media queries */
 @media (max-width: 768px) {
   .container {
     padding: 1rem;

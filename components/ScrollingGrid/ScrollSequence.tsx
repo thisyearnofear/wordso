@@ -1,201 +1,174 @@
-import React, { useEffect, useRef, type ReactNode } from "react";
+// ScrollSequence.tsx
+
+import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "@studio-freight/lenis";
 import styles from "./ScrollSequence.module.css";
+import { InstructionSection } from "../OnchainWordle/OnchainWordle";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const TOTAL_IMAGES = 50;
+const IMAGES_PER_SECTION = 10; // Number of images per section
 
 interface ScrollSequenceProps {
-  children: ReactNode[];
+  instructionSections: InstructionSection[];
+  showInput?: boolean;
 }
 
-const ScrollSequence: React.FC<ScrollSequenceProps> = ({ children }) => {
+const ScrollSequence: React.FC<ScrollSequenceProps> = ({
+  instructionSections,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<Array<HTMLDivElement | null>>([]);
-  const lenisRef = useRef<Lenis | null>(null);
+
+  const getImagesForSection = (sectionIndex: number) => {
+    const startIndex = sectionIndex * IMAGES_PER_SECTION;
+    return Array.from({ length: IMAGES_PER_SECTION }, (_, i) => {
+      const imageIndex = (startIndex + i) % TOTAL_IMAGES;
+      return (
+        <div className={styles.gridItem} key={i}>
+          <div
+            className={styles.gridItemInner}
+            style={{
+              backgroundImage: `url(/images/${imageIndex + 1}.png)`,
+            }}
+          />
+        </div>
+      );
+    });
+  };
 
   useEffect(() => {
-    const lenisOptions = {
-      duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical" as const,
-      gestureOrientation: "vertical" as const,
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
-      infinite: false,
-    };
-
-    lenisRef.current = new Lenis(lenisOptions);
-
-    function raf(time: number) {
-      if (lenisRef.current) {
-        lenisRef.current.raf(time);
-      }
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    if (lenisRef.current) {
-      lenisRef.current.on("scroll", () => {
-        ScrollTrigger.update();
-      });
-    }
-
-    const updateLenis = (time: number) => {
-      if (lenisRef.current) {
-        lenisRef.current.raf(time * 1000);
-      }
-    };
-
-    gsap.ticker.add(updateLenis);
+    const container = containerRef.current;
+    if (!container) return;
 
     const ctx = gsap.context(() => {
-      const sections = sectionsRef.current.filter(
-        (section): section is HTMLDivElement => section !== null
-      );
+      const masterTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container,
+          start: "top top",
+          end: `+=${window.innerHeight * (instructionSections.length + 0.5)}`, // Added extra space for input section
+          scrub: 1,
+          pin: true,
+          pinSpacing: true,
+        },
+      });
 
-      // Create a timeline for each section
-      sections.forEach((section, index) => {
-        // Base visibility timeline
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "bottom top",
-            toggleActions: "play reverse play reverse",
-          },
-        });
+      sectionsRef.current.forEach((section, index) => {
+        if (!section) return;
 
-        // Initial state
-        gsap.set(section, {
-          opacity: index === 0 ? 1 : 0,
+        const images = section.querySelectorAll<HTMLElement>(
+          `.${styles.gridItem}`
+        );
+        const text = section.querySelector<HTMLElement>(
+          `.${styles.textSection}`
+        );
+
+        if (!text) return;
+
+        // Set initial states
+        gsap.set([images, text], {
+          opacity: 0,
           y: 50,
-          scale: 0.95,
         });
 
-        // Animation for entering viewport
-        tl.to(section, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.5,
-          ease: "power2.out",
+        // Create section timeline
+        const sectionTl = gsap.timeline();
+
+        // Fade in
+        sectionTl
+          .to(images, {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            stagger: 0.05,
+            ease: "power2.out",
+          })
+          .to(
+            text,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+            },
+            "-=0.3"
+          )
+          // Fade out
+          .to(
+            [images, text],
+            {
+              opacity: 0,
+              y: -50,
+              duration: 0.5,
+              ease: "power2.in",
+            },
+            "+=1"
+          );
+
+        // Add section timeline to master timeline
+        masterTl.add(sectionTl, index * 2);
+      });
+
+      // Add specific animation for the final input section
+      const inputSection = container.querySelector<HTMLElement>(
+        `.${styles.inputSection}`
+      );
+      if (inputSection) {
+        gsap.set(inputSection, {
+          opacity: 0,
+          y: 50,
+          display: "block", // Ensure it's visible
         });
 
-        // Special handling for the first section (game)
-        if (index === 0) {
-          ScrollTrigger.create({
-            trigger: section,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-            onUpdate: (self) => {
-              // Gradually fade out and scale down as we scroll away
-              const progress = self.progress;
-              gsap.to(section, {
-                opacity: 1 - progress * 0.5, // Don't fade completely
-                scale: 1 - progress * 0.1,
-                y: progress * -30,
-                duration: 0,
-                overwrite: true,
-              });
-            },
-            onLeave: () => {
-              gsap.to(section, {
-                opacity: 0.5,
-                scale: 0.9,
-                duration: 0.3,
-              });
-            },
-            onEnterBack: () => {
-              gsap.to(section, {
-                opacity: 1,
-                scale: 1,
-                y: 0,
-                duration: 0.3,
-              });
-            },
-          });
-        }
-      });
-
-      // Navigation
-      const nav = document.createElement("div");
-      nav.className = styles.navigation;
-      nav.style.cssText =
-        "position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 1000;";
-
-      sections.forEach((section) => {
-        const button = document.createElement("button");
-        button.className = styles.navButton;
-        button.onclick = () => {
-          if (section) {
-            if (lenisRef.current) {
-              lenisRef.current.stop();
-            }
-
-            section.scrollIntoView({ behavior: "smooth" });
-
-            setTimeout(() => {
-              if (lenisRef.current) {
-                lenisRef.current.start();
-              }
-            }, 1000);
-          }
-        };
-        nav.appendChild(button);
-      });
-
-      document.body.appendChild(nav);
-
-      // Update active navigation button
-      sections.forEach((section, index) => {
-        ScrollTrigger.create({
-          trigger: section,
-          start: "top center",
-          end: "bottom center",
-          onToggle: ({ isActive }) => {
-            const button = nav.children[index] as HTMLButtonElement;
-            if (isActive) {
-              button.classList.add(styles.active);
-            } else {
-              button.classList.remove(styles.active);
-            }
+        masterTl.to(
+          inputSection,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
           },
-        });
-      });
-
-      return () => {
-        document.body.removeChild(nav);
-      };
-    }, containerRef);
-
-    return () => {
-      ctx.revert();
-      if (lenisRef.current) {
-        lenisRef.current.destroy();
+          `>-0.2`
+        ); // Slightly overlap with last section
       }
-      gsap.ticker.remove(updateLenis);
-    };
-  }, [children.length]);
+    });
+
+    return () => ctx.revert();
+  }, [instructionSections.length]);
 
   return (
-    <div ref={containerRef} className={styles.container}>
-      {React.Children.map(children, (child, index) => (
+    <div ref={containerRef} className={styles.sequence}>
+      {instructionSections.map((section, index) => (
         <div
-          ref={(el) => {
-            sectionsRef.current[index] = el;
-          }}
-          className={styles.section}
           key={index}
-          style={{
-            position: "relative",
-            zIndex: children.length - index, // Higher sections stay on top
+          className={styles.section}
+          ref={(el) => {
+            if (el) sectionsRef.current[index] = el;
           }}
         >
-          {child}
+          <div className={styles.grid}>
+            <div className={styles.gridWrap}>{getImagesForSection(index)}</div>
+          </div>
+          <div className={styles.textSection}>
+            <h2>{section.title}</h2>
+            <p>{section.content}</p>
+          </div>
         </div>
       ))}
+
+      {/* Always render the input section */}
+      <div className={styles.inputSection}>
+        <h2>Make Your On-Chain Guess</h2>
+        <div className={styles.inputWrapper}>
+          <input
+            type="text"
+            placeholder="Enter your guess"
+            maxLength={5}
+            className={styles.guessInput}
+          />
+          <button className={styles.submitButton}>Submit On-Chain Guess</button>
+        </div>
+      </div>
     </div>
   );
 };

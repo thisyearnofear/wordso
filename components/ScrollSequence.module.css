@@ -1,0 +1,14 @@
+/* Remove duplicate transform-style and perspective declarations */
+.sequence {
+  position: relative;
+  height: calc(100vh * var(--total-sections, 6));
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  overflow: hidden;
+}
+
+.gridItem {
+  /* Add GPU acceleration */
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}

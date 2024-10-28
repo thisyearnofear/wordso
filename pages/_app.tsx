@@ -43,11 +43,11 @@ export default function App({
         (document.documentElement.scrollHeight - window.innerHeight);
       document.documentElement.style.setProperty(
         "--scroll",
-        `${scrollPercentage * 100}%`,
+        `${scrollPercentage * 100}%`
       );
       document.documentElement.style.setProperty(
         "--bg-position",
-        `0 ${scrollPercentage * 100}%`,
+        `0 ${scrollPercentage * 100}%`
       );
     };
 
@@ -140,11 +140,11 @@ App.getInitialProps = ({ ctx }: AppContext) => {
   return {
     numberOfLetters: getNumberFromCookie(
       numberOfLettersCookie,
-      DEFAULT_NUMBER_OF_LETTERS,
+      DEFAULT_NUMBER_OF_LETTERS
     ),
     numberOfAttempts: getNumberFromCookie(
       numberOfAttemptsCookie,
-      DEFAULT_NUMBER_OF_ATTEMPTS,
+      DEFAULT_NUMBER_OF_ATTEMPTS
     ),
     colorScheme: getCookie("preferred-color-theme", ctx),
   };

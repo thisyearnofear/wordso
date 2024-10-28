@@ -39,6 +39,9 @@ html {
   --perspective: 1000px;
   --sequence-height: 400vh;
   --section-height: 100vh;
+  --transition-smooth: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --glass-blur: blur(10px);
 }
 
 .dark:root {
@@ -343,6 +346,9 @@ body {
   position: relative;
   z-index: 1;
   background: var(--bg);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 .Game {
   -webkit-user-select: none;
@@ -1415,7 +1421,7 @@ button[hidden] {
   background: rgba(255, 255, 255, 0.95);
   padding: 2rem;
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
 }
 
 .dark .App-container,

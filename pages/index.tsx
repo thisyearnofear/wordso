@@ -1,3 +1,5 @@
+// pages/index.tsx
+
 import Head from "next/head";
 import { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "store/hooks";
@@ -15,9 +17,8 @@ import { useRouter } from "next/router";
 import { useTranslation } from "hooks/use-translations";
 import { Languages } from "components/Languages";
 import ConnectButton from "../components/ConnectButton";
-import dynamic from "next/dynamic";
-import ScrollingGrid from "components/ScrollingGrid/ScrollingGrid";
 import ScrollSequence from "components/ScrollingGrid/ScrollSequence";
+import { InstructionSection } from "components/OnchainWordle/OnchainWordle";
 import Lenis from "@studio-freight/lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -25,10 +26,32 @@ import type { LenisOptions } from "@studio-freight/lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const OnChainWordle = dynamic(
-  () => import("components/OnchainWordle/OnchainWordle"),
-  { ssr: true }
-);
+// Define instructionSections locally
+const instructionSections: InstructionSection[] = [
+  {
+    title: "Welcome to On-Chain Wordle",
+    content: "Get ready for a blockchain-powered word guessing game!",
+  },
+  {
+    title: "How to Play",
+    content:
+      "Start with the off-chain version, then use image clues for the on-chain word.",
+  },
+  {
+    title: "Daily Challenge",
+    content: "You get one on-chain guess every 24 hours. Make it count!",
+  },
+  {
+    title: "Blockchain Integration",
+    content:
+      "Your guesses are recorded on the blockchain, ensuring fairness and transparency.",
+  },
+  {
+    title: "Ready to Play?",
+    content:
+      "Scroll down to make your on-chain guess and join the crypto-word revolution!",
+  },
+];
 
 export default function Game({
   colorScheme,
@@ -39,12 +62,13 @@ export default function Game({
   const translation = useTranslation();
   const dispatch = useAppDispatch();
   const lenisRef = useRef<Lenis | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const { deleteLastLetter, passToNextRow, addNewKeyWithEvent, activeModal } =
     useGame();
   const { backspace, enter } = useAppSelector(gameSelector);
 
-  // Initialize Lenis smooth scrolling
+  // Initialize Lenis smooth scrolling and GSAP animations
   useEffect(() => {
     const options: LenisOptions = {
       duration: 1.2,
@@ -59,15 +83,47 @@ export default function Game({
 
     lenisRef.current = new Lenis(options);
 
+    // Create GSAP context
+    const ctx = gsap.context(() => {
+      if (!containerRef.current) return;
+
+      // Pin game section
+      ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: "top top",
+        end: "bottom top",
+        pin: true,
+        pinSpacing: false,
+      });
+
+      // Fade out game section
+      gsap.to(containerRef.current, {
+        opacity: 0,
+        y: -50,
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "center top",
+          scrub: true,
+          onLeave: () => {
+            gsap.set(containerRef.current, { visibility: "hidden" });
+          },
+          onEnterBack: () => {
+            gsap.set(containerRef.current, { visibility: "visible" });
+          },
+        },
+      });
+    });
+
+    // RAF loop for Lenis
     function raf(time: number) {
       lenisRef.current?.raf(time);
       requestAnimationFrame(raf);
     }
-
     requestAnimationFrame(raf);
 
     // Connect Lenis to ScrollTrigger
-    lenisRef.current.on("scroll", () => ScrollTrigger.update());
+    lenisRef.current.on("scroll", ScrollTrigger.update);
 
     const rafCallback = (time: number) => {
       lenisRef.current?.raf(time * 1000);
@@ -77,11 +133,13 @@ export default function Game({
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      ctx.revert();
       lenisRef.current?.destroy();
       gsap.ticker.remove(rafCallback);
     };
   }, []);
 
+  // Game logic effects
   useEffect(() => {
     if (backspace) deleteLastLetter();
   }, [backspace, deleteLastLetter]);
@@ -120,7 +178,7 @@ export default function Game({
 
   // Prepare game section content
   const GameSection = (
-    <div className="App-container">
+    <div className="App-container" ref={containerRef}>
       <Header colorScheme={colorScheme} />
       <div className="Game">
         <GamePanel />
@@ -146,17 +204,11 @@ export default function Game({
       <div className="scroll-progress" />
       <ConnectButton />
 
-      {/* ScrollSequence with smooth scrolling */}
-      <ScrollSequence>
-        {/* Game Section */}
-        {GameSection}
+      {/* Game Section */}
+      {GameSection}
 
-        {/* Grid Section */}
-        <ScrollingGrid />
-
-        {/* OnChain Section */}
-        <OnChainWordle />
-      </ScrollSequence>
+      {/* ScrollSequence with instructions */}
+      <ScrollSequence instructionSections={instructionSections} />
 
       {/* Modals and overlays */}
       <Settings />
