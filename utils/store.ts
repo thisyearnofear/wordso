@@ -1,6 +1,9 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { decode, encode } from "js-base64";
-import { DEFAULT_NUMBER_OF_ATTEMPTS, DEFAULT_NUMBER_OF_LETTERS } from "./numbers-of-letters";
+import {
+  DEFAULT_NUMBER_OF_ATTEMPTS,
+  DEFAULT_NUMBER_OF_LETTERS,
+} from "./numbers-of-letters";
 
 export interface RootState {
   isSettingsActive: boolean;
@@ -36,37 +39,62 @@ export const createInitialState = (): RootState => ({
   words: [],
 });
 
-export const createSetState = <T extends keyof RootState>(property: T, mergeObj?: boolean) => {
+export const createSetState = <T extends keyof RootState>(
+  property: T,
+  mergeObj?: boolean
+) => {
   return (
     state: RootState,
-    action: PayloadAction<RootState[T] extends Record<string, unknown> ? Partial<RootState[T]> : RootState[T]>,
+    action: PayloadAction<
+      T extends keyof RootState
+        ? RootState[T] extends Record<string, unknown>
+          ? Partial<RootState[T]>
+          : RootState[T]
+        : never
+    >
   ) => {
     if (!mergeObj) {
-      state[property] = action.payload as any;
-      return state;
+      state[property] = action.payload as RootState[T];
+    } else {
+      const obj = state[property];
+      if (
+        typeof obj === "object" &&
+        obj !== null &&
+        typeof action.payload === "object"
+      ) {
+        state[property] = { ...obj, ...action.payload } as RootState[T];
+      }
     }
-
-    const obj = state[property];
-    if (typeof obj === "object" && typeof action.payload === "object") state[property] = { ...obj, ...action.payload };
   };
 };
 
-export const getRandomWord = (words: string[]) => encode(words[Math.floor(Math.random() * words.length)]);
+export const getRandomWord = (words: string[]) =>
+  encode(words[Math.floor(Math.random() * words.length)]);
 
 export const getWords = (words: string[], length: number) => {
-  return words.filter((word): word is string => typeof word === "string" && word.length === length);
+  return words.filter(
+    (word): word is string => typeof word === "string" && word.length === length
+  );
 };
 
 export const getChallengeModeWord = (
   words: string[],
-  challenge?: string,
-): { exist: false } | { exist: true; challenge: string; encodedWord: string } => {
+  challenge?: string
+):
+  | { exist: false }
+  | { exist: true; challenge: string; encodedWord: string } => {
   const challengeModeWord = challenge && decode(challenge);
-  const existsChallengeModeWord = !!(challengeModeWord && words.includes(challengeModeWord));
+  const existsChallengeModeWord = !!(
+    challengeModeWord && words.includes(challengeModeWord)
+  );
 
   if (!challengeModeWord || !existsChallengeModeWord) return { exist: false };
 
-  return { exist: true, challenge: challengeModeWord, encodedWord: encode(challengeModeWord) };
+  return {
+    exist: true,
+    challenge: challengeModeWord,
+    encodedWord: encode(challengeModeWord),
+  };
 };
 
 interface Options {
@@ -76,7 +104,10 @@ interface Options {
   words?: string[];
 }
 
-export const restartGameAction = (state: RootState, options?: Options): RootState => {
+export const restartGameAction = (
+  state: RootState,
+  options?: Options
+): RootState => {
   const {
     numberOfLetters = state.numberOfLetters,
     numberOfAttempts = state.numberOfAttempts,
@@ -84,16 +115,24 @@ export const restartGameAction = (state: RootState, options?: Options): RootStat
     encodedChallengeModeWord = state.isChallengeMode ? state.word : undefined,
   } = options ?? {};
 
-  const challengeModeWord = getChallengeModeWord(words, encodedChallengeModeWord);
-  const validChallengeMode = challengeModeWord.exist && numberOfLetters === state.numberOfLetters;
+  const challengeModeWord = getChallengeModeWord(
+    words,
+    encodedChallengeModeWord
+  );
+  const validChallengeMode =
+    challengeModeWord.exist && numberOfLetters === state.numberOfLetters;
 
   return {
     ...createInitialState(),
     isChallengeMode: validChallengeMode,
     gameIs: "playing",
-    numberOfLetters: validChallengeMode ? challengeModeWord.challenge.length : numberOfLetters,
+    numberOfLetters: validChallengeMode
+      ? challengeModeWord.challenge.length
+      : numberOfLetters,
     numberOfAttempts,
-    word: challengeModeWord.exist ? challengeModeWord.encodedWord : getRandomWord(getWords(words, numberOfLetters)),
+    word: challengeModeWord.exist
+      ? challengeModeWord.encodedWord
+      : getRandomWord(getWords(words, numberOfLetters)),
     words,
   };
 };

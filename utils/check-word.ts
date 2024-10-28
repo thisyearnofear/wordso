@@ -18,7 +18,8 @@ function getLetters(letters: string[]): Letters {
 function getKeys(word: string, check: string): Word[] {
   const letters = check.toUpperCase().split("");
 
-  if (word === check) return letters.map((letter) => ({ key: letter, class: "letter-correct" }));
+  if (word === check)
+    return letters.map((letter) => ({ key: letter, class: "letter-correct" }));
 
   const lettersCounter = getLetters(word.split(""));
   const result: Word[] = [];
@@ -32,7 +33,8 @@ function getKeys(word: string, check: string): Word[] {
 
   letters.forEach((letter, i) => {
     if (letter === word[i]) return;
-    if (!lettersCounter[letter]) return (result[i] = { key: letter, class: "letter-absent" });
+    if (!lettersCounter[letter])
+      return (result[i] = { key: letter, class: "letter-absent" });
     if (lettersCounter[letter] > 0) {
       result[i] = { key: letter, class: "letter-elsewhere" };
       lettersCounter[letter]--;

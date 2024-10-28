@@ -23,7 +23,7 @@ const GridItem = React.forwardRef<HTMLDivElement, GridItemProps>(
         }}
       />
     </div>
-  )
+  ),
 );
 
 GridItem.displayName = "GridItem";
@@ -84,7 +84,7 @@ const ScrollingGrid: React.FC = () => {
             duration: 1.5,
             ease: "power2.out",
           },
-          "<"
+          "<",
         );
 
       // Add to master timeline with stagger

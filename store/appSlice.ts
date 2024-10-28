@@ -1,20 +1,43 @@
-import { createSelector, createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import {
+  createSelector,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import { resetGame } from "utils/reset-game";
-import { createInitialState, createSetState, restartGameAction, type RootState } from "utils/store";
+import {
+  createInitialState,
+  createSetState,
+  restartGameAction,
+  type RootState,
+} from "utils/store";
 
 export const appSlice = createSlice({
   name: "app",
   initialState: createInitialState(),
   reducers: {
-    startGame: (state, action: PayloadAction<{ words: string[]; encodedChallengeModeWord?: string }>) => {
+    startGame: (
+      state,
+      action: PayloadAction<{
+        words: string[];
+        encodedChallengeModeWord?: string;
+      }>,
+    ) => {
       const { words, encodedChallengeModeWord } = action.payload;
       return restartGameAction(state, { words, encodedChallengeModeWord });
     },
-    setSettings: (state, action: PayloadAction<{ numberOfLetters?: number; numberOfAttempts?: number }>) => {
+    setSettings: (
+      state,
+      action: PayloadAction<{
+        numberOfLetters?: number;
+        numberOfAttempts?: number;
+      }>,
+    ) => {
       resetGame();
       return restartGameAction(state, {
-        numberOfLetters: action.payload.numberOfLetters ?? state.numberOfLetters,
-        numberOfAttempts: action.payload.numberOfAttempts ?? state.numberOfAttempts,
+        numberOfLetters:
+          action.payload.numberOfLetters ?? state.numberOfLetters,
+        numberOfAttempts:
+          action.payload.numberOfAttempts ?? state.numberOfAttempts,
       });
     },
     restartGame: (state, action: PayloadAction<number | undefined>) => {
@@ -58,7 +81,13 @@ const defaultSelector = <T>(state: T) => state;
 
 export const letterSelector = createSelector(
   defaultSelector,
-  ({ currentRow, word, words, numberOfLetters, numberOfAttempts }: RootState) => ({
+  ({
+    currentRow,
+    word,
+    words,
+    numberOfLetters,
+    numberOfAttempts,
+  }: RootState) => ({
     currentRow,
     word,
     words,
@@ -78,16 +107,22 @@ export const panelSelector = createSelector(
   }),
 );
 
-export const stateSelector = createSelector(defaultSelector, ({ gameIs, word, isChallengeMode }: RootState) => ({
-  gameIs,
-  word,
-  isChallengeMode,
-}));
+export const stateSelector = createSelector(
+  defaultSelector,
+  ({ gameIs, word, isChallengeMode }: RootState) => ({
+    gameIs,
+    word,
+    isChallengeMode,
+  }),
+);
 
-export const gameSelector = createSelector(defaultSelector, ({ backspace, enter }: RootState) => ({
-  backspace,
-  enter,
-}));
+export const gameSelector = createSelector(
+  defaultSelector,
+  ({ backspace, enter }: RootState) => ({
+    backspace,
+    enter,
+  }),
+);
 
 export const gameHookSelector = createSelector(
   defaultSelector,
@@ -121,7 +156,12 @@ export const gameHookSelector = createSelector(
 
 export const settingsSelector = createSelector(
   defaultSelector,
-  ({ isChallengeMode, isSettingsActive, numberOfLetters, numberOfAttempts }: RootState) => ({
+  ({
+    isChallengeMode,
+    isSettingsActive,
+    numberOfLetters,
+    numberOfAttempts,
+  }: RootState) => ({
     isChallengeMode,
     isSettingsActive,
     numberOfLetters,
@@ -129,15 +169,21 @@ export const settingsSelector = createSelector(
   }),
 );
 
-export const headerSelector = createSelector(defaultSelector, ({ gameIs, currentRow, isChallengeMode }: RootState) => ({
-  gameIs,
-  isChallengeMode,
-  startPlaying: currentRow > 0,
-}));
+export const headerSelector = createSelector(
+  defaultSelector,
+  ({ gameIs, currentRow, isChallengeMode }: RootState) => ({
+    gameIs,
+    isChallengeMode,
+    startPlaying: currentRow > 0,
+  }),
+);
 
-export const challengeSelector = createSelector(defaultSelector, ({ isChallengeActive, words }: RootState) => ({
-  isChallengeActive,
-  words,
-}));
+export const challengeSelector = createSelector(
+  defaultSelector,
+  ({ isChallengeActive, words }: RootState) => ({
+    isChallengeActive,
+    words,
+  }),
+);
 
 export default appSlice.reducer;

@@ -1,7 +1,7 @@
-import { useEffect, RefObject } from "react";
+import { useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import type { SectionRefs, ContainerRef } from "types/onchain-wordle";
+import type { ContainerRef, SectionRefs } from "../types/onchain-wordle";
 
 export const useOnchainWordleAnimations = (
   containerRef: ContainerRef,
@@ -13,10 +13,9 @@ export const useOnchainWordleAnimations = (
     const ctx = gsap.context(() => {
       if (!containerRef.current) return;
 
-      sectionRefs.current.forEach((section, index) => {
+      sectionRefs.current.forEach((section) => {
         if (!section) return;
 
-        // Create hover effect
         const hoverTl = gsap.timeline({ paused: true });
         hoverTl.to(section, {
           scale: 1.02,
@@ -26,14 +25,17 @@ export const useOnchainWordleAnimations = (
           ease: "power2.out",
         });
 
-        // Add event listeners with type safety
-        const handleMouseEnter = () => hoverTl.play();
-        const handleMouseLeave = () => hoverTl.reverse();
+        // Convert Promise-returning handlers to void functions
+        const handleMouseEnter = () => {
+          void hoverTl.play();
+        };
+        const handleMouseLeave = () => {
+          void hoverTl.reverse();
+        };
 
         section.addEventListener("mouseenter", handleMouseEnter);
         section.addEventListener("mouseleave", handleMouseLeave);
 
-        // Cleanup
         return () => {
           section.removeEventListener("mouseenter", handleMouseEnter);
           section.removeEventListener("mouseleave", handleMouseLeave);
@@ -42,5 +44,5 @@ export const useOnchainWordleAnimations = (
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [containerRef, sectionRefs]); // Add missing dependencies
 };

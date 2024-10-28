@@ -1,7 +1,11 @@
 import { setCookie } from "cookies-next";
 import { useTranslation } from "hooks/use-translations";
 import { useRouter } from "next/router";
-import { setSettings, setSettingsActive, settingsSelector } from "store/appSlice";
+import {
+  setSettings,
+  setSettingsActive,
+  settingsSelector,
+} from "store/appSlice";
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import {
   NUMBERS_OF_ATTEMPTS,
@@ -15,7 +19,12 @@ export function Settings() {
   const router = useRouter();
   const translation = useTranslation();
   const dispatch = useAppDispatch();
-  const { isSettingsActive, numberOfLetters, numberOfAttempts, isChallengeMode } = useAppSelector(settingsSelector);
+  const {
+    isSettingsActive,
+    numberOfLetters,
+    numberOfAttempts,
+    isChallengeMode,
+  } = useAppSelector(settingsSelector);
 
   return (
     <Modal
@@ -38,7 +47,7 @@ export function Settings() {
               <input
                 type="radio"
                 name="numbers"
-                onChange={(e) => {
+                onChange={() => {
                   if (isChallengeMode) void router.replace("/");
 
                   setCookie(NUMBER_OF_LETTERS_KEY, value.toString());
@@ -67,7 +76,7 @@ export function Settings() {
               <input
                 type="radio"
                 name="attempts"
-                onChange={(e) => {
+                onChange={() => {
                   setCookie(NUMBER_OF_ATTEMPTS_KEY, value.toString());
                   dispatch(setSettings({ numberOfAttempts: value }));
                   dispatch(setSettingsActive(false));

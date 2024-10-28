@@ -125,7 +125,7 @@ const ScrollSequence: React.FC<ScrollSequenceProps> = ({ children }) => {
       nav.style.cssText =
         "position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 1000;";
 
-      sections.forEach((section, index) => {
+      sections.forEach((section) => {
         const button = document.createElement("button");
         button.className = styles.navButton;
         button.onclick = () => {

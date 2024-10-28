@@ -4,11 +4,17 @@ import { useAppDispatch, useAppSelector } from "store/hooks";
 import { restartGame, setIsChallengeMode, stateSelector } from "store/appSlice";
 import { Modal } from "./Modal";
 import { getCookie } from "cookies-next";
-import { DEFAULT_NUMBER_OF_LETTERS, getNumberFromCookie, NUMBER_OF_LETTERS_KEY } from "utils/numbers-of-letters";
+import {
+  DEFAULT_NUMBER_OF_LETTERS,
+  getNumberFromCookie,
+  NUMBER_OF_LETTERS_KEY,
+} from "utils/numbers-of-letters";
 import { useRouter } from "next/router";
 import { useTranslation } from "hooks/use-translations";
 
-const Confetti = dynamic(() => import("../Confetti").then((m) => m.Confetti), { ssr: false });
+const Confetti = dynamic(() => import("../Confetti").then((m) => m.Confetti), {
+  ssr: false,
+});
 
 export function GameState() {
   const router = useRouter();
@@ -27,7 +33,9 @@ export function GameState() {
   return (
     <Modal
       active={gameIs !== "playing"}
-      title={gameIs === "won" ? translation.tip_you_win : translation.tip_you_lost}
+      title={
+        gameIs === "won" ? translation.tip_you_win : translation.tip_you_lost
+      }
       titleClass={gameIs}
     >
       <div className="cont">
@@ -36,7 +44,12 @@ export function GameState() {
           <span>{gameIs !== "playing" && wordToGuess}</span>
         </div>
         {gameIs !== "playing" && (
-          <a className="definition" target="_blank" rel="noreferrer" href={getDefinitionUrl(wordToGuess)}>
+          <a
+            className="definition"
+            target="_blank"
+            rel="noreferrer"
+            href={getDefinitionUrl(wordToGuess)}
+          >
             {translation.what_does_it_mean}
           </a>
         )}
@@ -50,7 +63,10 @@ export function GameState() {
               }
 
               const numberOfLettersCookie = getCookie(NUMBER_OF_LETTERS_KEY);
-              const numberOfLetters = getNumberFromCookie(numberOfLettersCookie, DEFAULT_NUMBER_OF_LETTERS);
+              const numberOfLetters = getNumberFromCookie(
+                numberOfLettersCookie,
+                DEFAULT_NUMBER_OF_LETTERS,
+              );
 
               dispatch(restartGame(numberOfLetters));
             }}

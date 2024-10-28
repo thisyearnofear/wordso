@@ -57,7 +57,7 @@ const OnChainWordle: React.FC = () => {
     const ctx = gsap.context(() => {
       if (!containerRef.current) return;
 
-      sectionRefs.current.forEach((section, index) => {
+      sectionRefs.current.forEach((section) => {
         if (!section) return;
 
         // Hover effect timeline
@@ -71,8 +71,13 @@ const OnChainWordle: React.FC = () => {
         });
 
         // Mouseenter/leave events with cleanup
-        const handleMouseEnter = () => hoverTl.play();
-        const handleMouseLeave = () => hoverTl.reverse();
+        const handleMouseEnter = () => {
+          hoverTl.play();
+        };
+
+        const handleMouseLeave = () => {
+          hoverTl.reverse();
+        };
 
         section.addEventListener("mouseenter", handleMouseEnter);
         section.addEventListener("mouseleave", handleMouseLeave);

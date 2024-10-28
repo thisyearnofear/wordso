@@ -1,5 +1,11 @@
 import { useRouter } from "next/router";
-import { IconCirclePlus, IconSettings, IconMoon, IconSun, IconRefresh } from "@tabler/icons-react";
+import {
+  IconCirclePlus,
+  IconSettings,
+  IconMoon,
+  IconSun,
+  IconRefresh,
+} from "@tabler/icons-react";
 import { useCallback, useState } from "react";
 import { setCookie } from "cookies-next";
 import { useAppDispatch, useAppSelector } from "store/hooks";
@@ -24,7 +30,8 @@ export function Header({ colorScheme }: { colorScheme: "light" | "dark" }) {
 
   const [theme, setTheme] = useState<"dark" | "light">(colorScheme);
 
-  const { gameIs, startPlaying, isChallengeMode } = useAppSelector(headerSelector);
+  const { gameIs, startPlaying, isChallengeMode } =
+    useAppSelector(headerSelector);
 
   const toggleColorTheme = useCallback(() => {
     setTheme((theme) => {
@@ -38,8 +45,13 @@ export function Header({ colorScheme }: { colorScheme: "light" | "dark" }) {
   return (
     <header>
       <div className="cont flex">
-        <button className="lang" onClick={() => dispatch(setLanguagesActive(true))}>
-          <span className="icon">{locale === "en" ? <EnglishUSFlag /> : <SpanishFlag />}</span>
+        <button
+          className="lang"
+          onClick={() => dispatch(setLanguagesActive(true))}
+        >
+          <span className="icon">
+            {locale === "en" ? <EnglishUSFlag /> : <SpanishFlag />}
+          </span>
           {locale.toUpperCase()}
         </button>
         <button
@@ -68,7 +80,9 @@ export function Header({ colorScheme }: { colorScheme: "light" | "dark" }) {
 
               dispatch(restartGame());
             }}
-            aria-label={gameIs === "playing" ? translation.give_up : translation.restart}
+            aria-label={
+              gameIs === "playing" ? translation.give_up : translation.restart
+            }
           >
             {gameIs === "playing" ? (
               <span className="give-up">{translation.give_up}</span>

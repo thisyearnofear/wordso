@@ -8,7 +8,8 @@ import { useTranslation } from "hooks/use-translations";
 export function GamePanel() {
   const translation = useTranslation();
 
-  const { gameIs, keys, modal, numberOfAttempts, isChallengeMode } = useAppSelector(panelSelector);
+  const { gameIs, keys, modal, numberOfAttempts, isChallengeMode } =
+    useAppSelector(panelSelector);
 
   return (
     <>
@@ -25,7 +26,11 @@ export function GamePanel() {
       )}
       {gameIs !== "playing" && (
         <div className="message">
-          <b>{gameIs === "won" ? translation.tip_you_win : translation.tip_you_lost}</b>
+          <b>
+            {gameIs === "won"
+              ? translation.tip_you_win
+              : translation.tip_you_lost}
+          </b>
         </div>
       )}
       <div className="Game-keyboard">

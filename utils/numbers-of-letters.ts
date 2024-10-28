@@ -8,10 +8,22 @@ export const DEFAULT_NUMBER_OF_LETTERS = 5;
 export const DEFAULT_NUMBER_OF_ATTEMPTS = 6;
 
 export function isValidNumberOfLetter(n: number) {
-  // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-  return !isNaN(n) && n > (NUMBERS_OF_LETTERS.at(0) as number) && n < (NUMBERS_OF_LETTERS.at(-1) as number);
+  const firstNumber = NUMBERS_OF_LETTERS[0];
+  const lastNumber = NUMBERS_OF_LETTERS[NUMBERS_OF_LETTERS.length - 1];
+  return (
+    !isNaN(n) &&
+    firstNumber !== undefined &&
+    lastNumber !== undefined &&
+    n > firstNumber &&
+    n < lastNumber
+  );
 }
 
-export function getNumberFromCookie(numberOfLetters: any, defaultValue: number): number {
-  return +(numberOfLetters ?? 0) || defaultValue;
+export function getNumberFromCookie(
+  cookie: string | undefined,
+  defaultValue: number
+): number {
+  if (!cookie) return defaultValue;
+  const value = parseInt(cookie, 10);
+  return isNaN(value) ? defaultValue : value;
 }

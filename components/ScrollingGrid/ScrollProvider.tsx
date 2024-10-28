@@ -1,5 +1,4 @@
-// ScrollProvider.tsx
-import { ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import Lenis from "@studio-freight/lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -26,28 +25,38 @@ export const ScrollProvider = ({ children }: ScrollProviderProps) => {
       touchMultiplier: 2,
     });
 
+    // Define separate functions for ScrollTrigger update and raf
+    const updateScrollTrigger = () => ScrollTrigger.update();
+    const rafFunction = (time: number) => {
+      lenisRef.current?.raf(time * 1000);
+    };
+
     // Connect Lenis to GSAP
-    lenisRef.current.on("scroll", ScrollTrigger.update);
+    lenisRef.current.on("scroll", updateScrollTrigger);
 
     // Update GSAP ticker with Lenis
-    gsap.ticker.add((time) => {
-      lenisRef.current?.raf(time * 1000);
-    });
+    gsap.ticker.add(rafFunction);
 
     // Essential: stop smooth scrolling during GSAP animations
+    const stopScroll = () => lenisRef.current?.stop();
+    const startScroll = () => lenisRef.current?.start();
+
     ScrollTrigger.defaults({
-      onEnter: () => lenisRef.current?.stop(), // Safely call stop if lenisRef.current is defined
-      onLeave: () => lenisRef.current?.start(), // Safely call start if lenisRef.current is defined
-      onEnterBack: () => lenisRef.current?.stop(), // Safely call stop if lenisRef.current is defined
-      onLeaveBack: () => lenisRef.current?.start(), // Safely call start if lenisRef.current is defined
+      onEnter: stopScroll,
+      onLeave: startScroll,
+      onEnterBack: stopScroll,
+      onLeaveBack: startScroll,
     });
 
     return () => {
-      // Clean up: check if lenisRef.current is not null before calling methods
+      // Clean up
       if (lenisRef.current) {
+        lenisRef.current.off("scroll", updateScrollTrigger);
         lenisRef.current.destroy();
-        gsap.ticker.remove(lenisRef.current.raf); // Remove raf if it is a valid function
+        gsap.ticker.remove(rafFunction);
       }
+      // Optionally, kill all ScrollTriggers
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
 

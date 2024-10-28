@@ -1,16 +1,47 @@
 export function SpanishFlag() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 24">
-      <mask id="a" width="32" height="24" x="0" y="0" maskUnits="userSpaceOnUse" style={{ maskType: "alpha" }}>
+      <mask
+        id="a"
+        width="32"
+        height="24"
+        x="0"
+        y="0"
+        maskUnits="userSpaceOnUse"
+        style={{ maskType: "alpha" }}
+      >
         <path fill="#fff" d="M0 0h32v24H0z" />
       </mask>
       <g mask="url(#a)">
-        <path fill="#FFB400" fillRule="evenodd" d="M0 0v24h32V0H0z" clipRule="evenodd" />
-        <mask id="b" width="32" height="24" x="0" y="0" maskUnits="userSpaceOnUse" style={{ maskType: "alpha" }}>
-          <path fill="#fff" fillRule="evenodd" d="M0 0v24h32V0H0z" clipRule="evenodd" />
+        <path
+          fill="#FFB400"
+          fillRule="evenodd"
+          d="M0 0v24h32V0H0z"
+          clipRule="evenodd"
+        />
+        <mask
+          id="b"
+          width="32"
+          height="24"
+          x="0"
+          y="0"
+          maskUnits="userSpaceOnUse"
+          style={{ maskType: "alpha" }}
+        >
+          <path
+            fill="#fff"
+            fillRule="evenodd"
+            d="M0 0v24h32V0H0z"
+            clipRule="evenodd"
+          />
         </mask>
         <g mask="url(#b)">
-          <path fill="#C51918" fillRule="evenodd" d="M0 0v6h32V0H0zm0 18v6h32v-6H0z" clipRule="evenodd" />
+          <path
+            fill="#C51918"
+            fillRule="evenodd"
+            d="M0 0v6h32V0H0zm0 18v6h32v-6H0z"
+            clipRule="evenodd"
+          />
           <path fill="#F1F9FF" d="M5.008 10.272h1.12v5.824h-1.12z" />
           <path
             fill="#C88A02"
@@ -30,7 +61,15 @@ export function SpanishFlag() {
             d="M4.56 16.992h2.016v.896s-.252-.112-.504-.112-.504.112-.504.112-.252-.112-.504-.112-.504.112-.504.112v-.896z"
             clipRule="evenodd"
           />
-          <mask id="c" width="3" height="2" x="4" y="16" maskUnits="userSpaceOnUse" style={{ maskType: "alpha" }}>
+          <mask
+            id="c"
+            width="3"
+            height="2"
+            x="4"
+            y="16"
+            maskUnits="userSpaceOnUse"
+            style={{ maskType: "alpha" }}
+          >
             <path
               fill="#fff"
               fillRule="evenodd"
@@ -60,7 +99,15 @@ export function SpanishFlag() {
             d="M15.536 16.992h2.016v.896s-.252-.112-.504-.112-.504.112-.504.112-.252-.112-.504-.112-.504.112-.504.112v-.896z"
             clipRule="evenodd"
           />
-          <mask id="d" width="3" height="2" x="15" y="16" maskUnits="userSpaceOnUse" style={{ maskType: "alpha" }}>
+          <mask
+            id="d"
+            width="3"
+            height="2"
+            x="15"
+            y="16"
+            maskUnits="userSpaceOnUse"
+            style={{ maskType: "alpha" }}
+          >
             <path
               fill="#fff"
               fillRule="evenodd"
@@ -145,7 +192,15 @@ export function SpanishFlag() {
             clipRule="evenodd"
             opacity=".3"
           />
-          <mask id="e" width="8" height="9" x="7" y="9" maskUnits="userSpaceOnUse" style={{ maskType: "alpha" }}>
+          <mask
+            id="e"
+            width="8"
+            height="9"
+            x="7"
+            y="9"
+            maskUnits="userSpaceOnUse"
+            style={{ maskType: "alpha" }}
+          >
             <path
               fill="#fff"
               fillRule="evenodd"
@@ -167,7 +222,10 @@ export function SpanishFlag() {
               d="M9.04 9.6h.336v.93H9.6v-.465h.336v.464h.336v.58h-.336v1.046h.336v.581H8.256v-.58h.336V11.11h-.336v-.58h.224v-.465h.336v.464h.224V9.6z"
               clipRule="evenodd"
             />
-            <path fill="#C88A02" d="m12.979 9.795.23-.245.48.45-.229.245-.481-.45z" />
+            <path
+              fill="#C88A02"
+              d="m12.979 9.795.23-.245.48.45-.229.245-.481-.45z"
+            />
             <path
               fill="#FFC034"
               fillRule="evenodd"

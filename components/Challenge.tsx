@@ -42,7 +42,11 @@ export function Challenge() {
         <div ref={validRef} className="desc valid" style={{ display: "none" }}>
           {translation.link_copied}
         </div>
-        <div ref={invalidRef} className="desc not_valid" style={{ display: "none" }}>
+        <div
+          ref={invalidRef}
+          className="desc not_valid"
+          style={{ display: "none" }}
+        >
           {translation.not_a_valid_word}
         </div>
         <div className="copy_btn">
@@ -57,7 +61,10 @@ export function Challenge() {
                 setTimeout(() => (e.style.display = "none"), 3000);
               };
               const create = async (word: string) => {
-                const data = getChallengeModeWord(words, encode(word.toLowerCase()));
+                const data = getChallengeModeWord(
+                  words,
+                  encode(word.toLowerCase()),
+                );
                 if (!data.exist) return false;
 
                 const encodedWord = data.encodedWord.replace(/=+$/g, "");
@@ -75,7 +82,8 @@ export function Challenge() {
                 return link;
               };
 
-              if (value.length < 4 || value.length > 11) return animate(invalidRef.current);
+              if (value.length < 4 || value.length > 11)
+                return animate(invalidRef.current);
               const link = await create(value);
               if (!link) return animate(invalidRef.current);
               animate(validRef.current);

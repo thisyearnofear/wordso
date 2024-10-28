@@ -1,8 +1,13 @@
 import { useEffect, useRef } from "react";
 
-export type EventHandler<K extends keyof WindowEventMap> = (ev: WindowEventMap[K]) => any;
+export type EventHandler<K extends keyof WindowEventMap> = (
+  ev: WindowEventMap[K]
+) => void;
 
-export function useWindowEvent<K extends keyof WindowEventMap>(eventName: K, handler: EventHandler<K>): void {
+export function useWindowEvent<K extends keyof WindowEventMap>(
+  eventName: K,
+  handler: EventHandler<K>
+): void {
   const savedHandler = useRef<EventHandler<K>>();
   const element = typeof window !== "undefined" ? window : undefined;
 

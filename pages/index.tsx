@@ -67,7 +67,7 @@ export default function Game({
     requestAnimationFrame(raf);
 
     // Connect Lenis to ScrollTrigger
-    lenisRef.current.on("scroll", ScrollTrigger.update);
+    lenisRef.current.on("scroll", () => ScrollTrigger.update());
 
     const rafCallback = (time: number) => {
       lenisRef.current?.raf(time * 1000);

@@ -26,7 +26,13 @@ export function KeyboardRow({ keys }: KeyRowProps) {
         return (
           <button
             key={isString ? item : item.key}
-            hidden={isString ? undefined : locale === item.locale ? undefined : item.locale != null}
+            hidden={
+              isString
+                ? undefined
+                : locale === item.locale
+                  ? undefined
+                  : item.locale != null
+            }
             className={`Game-keyboard-button ${isString ? "" : item.className}`}
             onClick={() => {
               const key = (isString ? item : item.key).toLowerCase();

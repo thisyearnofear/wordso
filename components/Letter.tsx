@@ -11,7 +11,8 @@ export interface LetterRowProps extends React.HTMLProps<HTMLDivElement> {
 
 export function LetterRow({ rowId, keys, ...props }: LetterRowProps) {
   const dispatch = useAppDispatch();
-  const { currentRow, word, words, numberOfLetters, numberOfAttempts } = useAppSelector(letterSelector);
+  const { currentRow, word, words, numberOfLetters, numberOfAttempts } =
+    useAppSelector(letterSelector);
   const shouldCheck = rowId === currentRow - 1;
   const ref = useRef<HTMLDivElement>(null);
 
@@ -36,19 +37,26 @@ export function LetterRow({ rowId, keys, ...props }: LetterRowProps) {
 
     letters?.forEach((element, i) => {
       if (!element) return;
-      setTimeout(() => animateKey({ element, className: check.keys[i].class, time }), time * i);
+      setTimeout(
+        () => animateKey({ element, className: check.keys[i].class, time }),
+        time * i,
+      );
     });
 
     setTimeout(
       () => {
         check.keys.forEach((item) => {
-          const keyboardRow = document.querySelector(`.Game-keyboard-button[data-key="${item.key.toLowerCase()}"]`);
+          const keyboardRow = document.querySelector(
+            `.Game-keyboard-button[data-key="${item.key.toLowerCase()}"]`,
+          );
           if (!keyboardRow) return;
 
-          const contains = (token: string) => keyboardRow.classList.contains(token);
+          const contains = (token: string) =>
+            keyboardRow.classList.contains(token);
           if (contains("letter-correct")) return;
           if (contains(item.class)) return;
-          if (contains("letter-elsewhere") && item.class !== "letter-correct") return;
+          if (contains("letter-elsewhere") && item.class !== "letter-correct")
+            return;
 
           animateKey({ element: keyboardRow, className: item.class, time });
         });

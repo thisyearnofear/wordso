@@ -7,13 +7,23 @@ export function Footer() {
       <div className="container">
         <div className="footer__top">
           <Link href="https://warpcast.com/papa" className="footer__logo">
-            <Image width={1200} height={200} src="/logo.svg" alt="Papa" priority />
+            <Image
+              width={1200}
+              height={200}
+              src="/logo.svg"
+              alt="Papa"
+              priority
+            />
           </Link>
         </div>
         <div className="footer__bottom">
           <div className="footer__copir">
             <span>
-              <a href="https://bit.ly/papaspotify" target="_blank" rel="noreferrer">
+              <a
+                href="https://bit.ly/papaspotify"
+                target="_blank"
+                rel="noreferrer"
+              >
                 🎧
               </a>
             </span>{" "}

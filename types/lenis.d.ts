@@ -13,10 +13,11 @@ declare module "@studio-freight/lenis" {
 
   export default class Lenis {
     constructor(options?: LenisOptions);
-    on(event: string, callback: () => void): void; // Correctly typed without implementation
+    on(event: string, callback: () => void): void;
+    off(event: string, callback: () => void): void; // Add off method
     raf(time: number): void;
     destroy(): void;
-    start(): void; // Add start method
-    stop(): void; // Add stop method
+    start(): void;
+    stop(): void;
   }
 }

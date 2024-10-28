@@ -26,7 +26,11 @@ export default function App({
   colorScheme,
   numberOfLetters,
   numberOfAttempts,
-}: AppProps & { colorScheme: "light" | "dark"; numberOfLetters: number; numberOfAttempts: number }) {
+}: AppProps & {
+  colorScheme: "light" | "dark";
+  numberOfLetters: number;
+  numberOfAttempts: number;
+}) {
   const translation = useTranslation();
 
   store.dispatch(setNumberOfLetters(numberOfLetters));
@@ -34,9 +38,17 @@ export default function App({
 
   useEffect(() => {
     const updateScroll = () => {
-      const scrollPercentage = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-      document.documentElement.style.setProperty("--scroll", `${scrollPercentage * 100}%`);
-      document.documentElement.style.setProperty("--bg-position", `0 ${scrollPercentage * 100}%`);
+      const scrollPercentage =
+        window.scrollY /
+        (document.documentElement.scrollHeight - window.innerHeight);
+      document.documentElement.style.setProperty(
+        "--scroll",
+        `${scrollPercentage * 100}%`,
+      );
+      document.documentElement.style.setProperty(
+        "--bg-position",
+        `0 ${scrollPercentage * 100}%`,
+      );
     };
 
     window.addEventListener("scroll", updateScroll);
@@ -62,18 +74,55 @@ export default function App({
         <meta name="description" content={translation.description} />
         <meta name="keywords" content={translation.keywords} />
         <meta name="theme-color" content="#000000" />
-        <link rel="shortcut icon" href="/icons/favicon-32x32.png" sizes="32x32" type="image/png" />
-        <link rel="shortcut icon" href="/icons/favicon-192x192.png" sizes="192x192" type="image/png" />
-        <link rel="shortcut icon" href="/icons/favicon-384x384.png" sizes="384x384" type="image/png" />
-        <link rel="apple-touch-icon" sizes="60x60" type="image/png" href="/icons/apple-touch-icon-60x60.png" />
-        <link rel="apple-touch-icon" sizes="72x72" type="image/png" href="/icons/apple-touch-icon-76x76.png" />
-        <link rel="apple-touch-icon" sizes="114x114" type="image/png" href="/icons/apple-touch-icon-120x120.png" />
-        <link rel="apple-touch-icon" sizes="144x144" type="image/png" href="/icons/apple-touch-icon-152x152.png" />
+        <link
+          rel="shortcut icon"
+          href="/icons/favicon-32x32.png"
+          sizes="32x32"
+          type="image/png"
+        />
+        <link
+          rel="shortcut icon"
+          href="/icons/favicon-192x192.png"
+          sizes="192x192"
+          type="image/png"
+        />
+        <link
+          rel="shortcut icon"
+          href="/icons/favicon-384x384.png"
+          sizes="384x384"
+          type="image/png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="60x60"
+          type="image/png"
+          href="/icons/apple-touch-icon-60x60.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="72x72"
+          type="image/png"
+          href="/icons/apple-touch-icon-76x76.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="114x114"
+          type="image/png"
+          href="/icons/apple-touch-icon-120x120.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="144x144"
+          type="image/png"
+          href="/icons/apple-touch-icon-152x152.png"
+        />
       </Head>
       <div className="scroll-progress" />
       <Provider store={store}>
         <ContextProvider cookies={getCookie("cookie")}>
-          <div className={`App ${MontserratFont.variable} ${OpenSansFont.variable}`}>
+          <div
+            className={`App ${MontserratFont.variable} ${OpenSansFont.variable}`}
+          >
             <Component {...pageProps} colorScheme={colorScheme} />
             <Footer />
           </div>
@@ -89,8 +138,14 @@ App.getInitialProps = ({ ctx }: AppContext) => {
   const numberOfAttemptsCookie = getCookie(NUMBER_OF_ATTEMPTS_KEY, ctx);
 
   return {
-    numberOfLetters: getNumberFromCookie(numberOfLettersCookie, DEFAULT_NUMBER_OF_LETTERS),
-    numberOfAttempts: getNumberFromCookie(numberOfAttemptsCookie, DEFAULT_NUMBER_OF_ATTEMPTS),
+    numberOfLetters: getNumberFromCookie(
+      numberOfLettersCookie,
+      DEFAULT_NUMBER_OF_LETTERS,
+    ),
+    numberOfAttempts: getNumberFromCookie(
+      numberOfAttemptsCookie,
+      DEFAULT_NUMBER_OF_ATTEMPTS,
+    ),
     colorScheme: getCookie("preferred-color-theme", ctx),
   };
 };

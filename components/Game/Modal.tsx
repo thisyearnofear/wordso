@@ -12,7 +12,14 @@ interface ModalProps {
   onClose?: () => void;
 }
 
-export function Modal({ active, className, children, title, titleClass, onClose }: ModalProps) {
+export function Modal({
+  active,
+  className,
+  children,
+  title,
+  titleClass,
+  onClose,
+}: ModalProps) {
   const translation = useTranslation();
   const modalRef = useRef<HTMLDivElement>(null);
   const modalOverlayRef = useRef<HTMLDivElement>(null);
@@ -26,11 +33,22 @@ export function Modal({ active, className, children, title, titleClass, onClose 
   useOnClickOutside(modalRef, handleClose);
 
   return (
-    <div ref={modalOverlayRef} className={`modal_overlay ${active ? " active" : ""}`}>
-      <div ref={modalRef} className={`modal_finish${active ? " active" : ""} ${className ?? ""}`}>
+    <div
+      ref={modalOverlayRef}
+      className={`modal_overlay ${active ? " active" : ""}`}
+    >
+      <div
+        ref={modalRef}
+        className={`modal_finish${active ? " active" : ""} ${className ?? ""}`}
+      >
         <div className={`top ${titleClass}`}>{title}</div>
         <div className="data">{children}</div>
-        <button type="button" className="close" aria-label={translation.close} onClick={handleClose}>
+        <button
+          type="button"
+          className="close"
+          aria-label={translation.close}
+          onClick={handleClose}
+        >
           <IconX />
         </button>
       </div>
