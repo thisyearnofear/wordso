@@ -122,6 +122,11 @@ export default function App({
         <ContextProvider cookies={getCookie("cookie")}>
           <div
             className={`App ${MontserratFont.variable} ${OpenSansFont.variable}`}
+            style={{
+              minHeight: "100vh",
+              display: "flex",
+              flexDirection: "column",
+            }}
           >
             <Component {...pageProps} colorScheme={colorScheme} />
             <Footer />

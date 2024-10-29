@@ -1,15 +1,11 @@
 /* KEEP: Core container styles */
 .container {
-  position: relative;
-  z-index: 2;
-  padding: 2rem;
-  color: var(--color);
-  background-color: var(--bg);
-  transform-style: preserve-3d;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* OPTIMIZE: Title - combine transitions */
@@ -25,12 +21,22 @@
 /* OPTIMIZE: Section styles - use CSS custom properties */
 .section {
   position: relative;
-  padding: 2rem;
+  padding: 1rem;
+  text-align: center;
+  min-height: auto;
   border-radius: 20px;
   background: rgba(var(--bg-rgb), 0.8);
   backdrop-filter: blur(10px);
   transform-style: preserve-3d;
   transition: transform 0.3s ease-out;
+}
+
+.section h2 {
+  margin-bottom: 0.5rem;
+}
+
+.section p {
+  margin: 0;
 }
 
 /* KEEP: Content positioning */
@@ -155,4 +161,35 @@
   .icon {
     font-size: 2rem;
   }
+}
+
+/* Style the input section to be closer to instructions */
+.inputSection {
+  padding: 2rem;
+  text-align: center;
+  background: var(--background-secondary);
+  border-radius: 1rem;
+  margin-top: -1rem; /* Pull it closer to instructions */
+}
+
+.inputSection h2 {
+  margin-bottom: 1rem;
+}
+
+.inputSection input {
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  font-size: 1.2rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.inputSection button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
 }

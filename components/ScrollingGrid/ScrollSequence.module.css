@@ -8,6 +8,7 @@
   transform-style: preserve-3d;
   perspective: 1000px;
   overflow: visible;
+  gap: 2rem; /* Reduce from default spacing */
 }
 
 .section {
@@ -23,10 +24,12 @@
   transform-style: preserve-3d;
   will-change: transform;
   z-index: 2;
+  margin-bottom: 2rem; /* Add specific margin control */
 }
 
 .section:last-of-type {
-  margin-bottom: 10vh; /* Reduced space before input section */
+  margin-bottom: 0; /* Remove margin from last instruction */
+  min-height: 60vh; /* Even shorter for last section */
 }
 
 .grid {
@@ -132,6 +135,7 @@
   border-radius: 20px;
   text-align: center;
   z-index: 10;
+  margin-top: -100vh; /* Pull it up closer to instructions */
 }
 
 .inputWrapper {

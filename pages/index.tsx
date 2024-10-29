@@ -29,27 +29,26 @@ gsap.registerPlugin(ScrollTrigger);
 // Define instructionSections locally
 const instructionSections: InstructionSection[] = [
   {
-    title: "Welcome to On-Chain Wordle",
-    content: "Get ready for a blockchain-powered word guessing game!",
+    title: "Welcome to WordsO",
+    content: "Words Onchain, the word guessing game",
   },
   {
     title: "How to Play",
     content:
-      "Start with the off-chain version, then use image clues for the on-chain word.",
+      "Start with the off-chain version above, then use image clues for the on-chain word below.",
   },
   {
     title: "Daily Challenge",
     content: "You get one on-chain guess every 24 hours. Make it count!",
   },
   {
-    title: "Blockchain Integration",
+    title: "Scroll Integration x VRF",
     content:
-      "Your guesses are recorded on the blockchain, ensuring fairness and transparency.",
+      "We use blokchain tech to ensure randomness, fairness and transparency.",
   },
   {
     title: "Ready to Play?",
-    content:
-      "Scroll down to make your on-chain guess and join the crypto-word revolution!",
+    content: "Scroll down to make your on-chain guess!",
   },
 ];
 
